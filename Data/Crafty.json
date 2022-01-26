@@ -1,0 +1,12 @@
+{
+  "Author": "Dilly Snipnoodle [Omega]",
+  "Name": "Crafty",
+  "Punchline": "A plugin to find out what's worth crafting",
+  "Description": "Eventually this will tell you what to do to run this, but right now who knows",
+  "InternalName": "crafty",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "crafting",
+    "plugin"
+  ]
+}
