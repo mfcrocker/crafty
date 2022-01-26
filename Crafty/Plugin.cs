@@ -27,14 +27,11 @@ namespace CraftyPlugin
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            // you might normally want to embed resources and load them from the manifest stream
-            var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
-            var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
-            this.PluginUi = new PluginUI(this.Configuration, goatImage);
+            this.PluginUi = new PluginUI(this.Configuration);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "A useful message to display in /xlhelp"
+                HelpMessage = "This does nothing yet"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;

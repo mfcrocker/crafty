@@ -1,6 +1,7 @@
 ﻿using ImGuiNET;
 using System;
 using System.Numerics;
+using CraftyPlugin.API;
 
 namespace CraftyPlugin
 {
@@ -9,8 +10,6 @@ namespace CraftyPlugin
     class PluginUI : IDisposable
     {
         private Configuration configuration;
-
-        private ImGuiScene.TextureWrap goatImage;
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -28,15 +27,13 @@ namespace CraftyPlugin
         }
 
         // passing in the image here just for simplicity
-        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage)
+        public PluginUI(Configuration configuration)
         {
             this.configuration = configuration;
-            this.goatImage = goatImage;
         }
 
         public void Dispose()
         {
-            this.goatImage.Dispose();
         }
 
         public void Draw()
@@ -52,30 +49,53 @@ namespace CraftyPlugin
             DrawSettingsWindow();
         }
 
-        public void DrawMainWindow()
+        public async void DrawMainWindow()
         {
             if (!Visible)
             {
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("My Amazing Window", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            Universalis universalis = new Universalis("Omega", "Chaos");
+
+            ImGui.SetNextWindowSize(new Vector2(500, 500), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(500, 500), new Vector2(float.MaxValue, float.MaxValue));
+            if (ImGui.Begin("Crafty", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
+                ImGui.BeginTable("Table", 5);
+                ImGui.TableHeader("Recipe");
+                ImGui.TableSetupColumn("Recipe");
+                ImGui.NextColumn();
+                ImGui.TableHeader("Listings");
+                ImGui.TableSetupColumn("Listings");
+                ImGui.NextColumn();
+                ImGui.TableHeader("Sale Price");
+                ImGui.TableSetupColumn("Sale Price");
+                ImGui.NextColumn();
+                ImGui.TableHeader("Sale Velocity");
+                ImGui.TableSetupColumn("Sale Velocity");
+                ImGui.NextColumn();
+                ImGui.TableHeader("DC Name");
+                ImGui.TableSetupColumn("DC Name");
+                ImGui.NextColumn();
 
-                if (ImGui.Button("Show Settings"))
-                {
-                    SettingsVisible = true;
-                }
+                ImGui.TableHeadersRow();
 
-                ImGui.Spacing();
+                int itemID = 22559; // Bar Stool
+                UniversalisItemData itemData = await universalis.GetItemFromDataCenter(itemID);
+                ImGui.TableNextRow();
+                ImGui.NextColumn();
+                ImGui.Text("Bar Stool");
+                ImGui.NextColumn();
+                ImGui.Text(itemData.items[0].listings.Length.ToString());
+                ImGui.NextColumn();
+                ImGui.Text(itemData.items[0].minPrice.ToString());
+                ImGui.NextColumn();
+                ImGui.Text(itemData.items[0].regularSaleVelocity.ToString());
+                ImGui.NextColumn();
+                ImGui.Text(itemData.dcName);
 
-                ImGui.Text("Have a goat:");
-                ImGui.Indent(55);
-                ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
-                ImGui.Unindent(55);
+                ImGui.EndTable();
             }
             ImGui.End();
         }
